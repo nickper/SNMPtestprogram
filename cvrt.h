@@ -6,7 +6,6 @@
 
 namespace cvrt
 {
-
 std::string int_to_hex(int i)
 {
   std::stringstream stream;

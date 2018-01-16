@@ -29,35 +29,29 @@ Snmpv1::~Snmpv1()
 }
 
 void Snmpv1::sendMessage(const std::string str)
-{
+{ 
     this->constructMessage(str);
-    this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
+    //this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
 }
 
 
 void Snmpv1::sendMessage(const int32_t i, const std::string str, const std::string valuetype)
 {
     this->constructMessage(i, str, valuetype);
-    this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
+    //this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
 }
 
 void Snmpv1::sendMessage(const std::string str1, const std::string str2)
 {
     this->constructMessage(str1, str2);
-    this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
+    //this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
 }
 
 std::string Snmpv1::getError()
 {
-    switch (error) {
-        case 0:
-            std::cout << "no error" << std::endl;
-            return "no error";
-            break;
-        case 1:
-            std::cout << "error: TooBig" << std::endl;
-            return "TooBig";
-            break;
+    switch (this->error) {
+        case 0:     std::cout << "no error" << std::endl;       return "no error";
+        case 1:     std::cout << "error: TooBig" << std::endl;  return "TooBig"; //TODO ETC
         case 2:
             std::cout << "error: NoSuchName" << std::endl;
             return "NoSuchName";
@@ -131,7 +125,6 @@ std::string Snmpv1::getError()
             return "unknown";
             break;
         }
-        return "";
 }
 
 std::string Snmpv1::getVersion()
@@ -146,8 +139,9 @@ void Snmpv1::setCommunityString(std::string communityString)
 
 std::string Snmpv1::deciperErrorCode()
 {
-
+    //return something?
 }
+
 void Snmpv1::storeValue()
 {
         std::string communityStringreceived = "";
@@ -160,7 +154,8 @@ void Snmpv1::storeValue()
         uint8_t errorCode = 0;
         int16_t receivedoidlen = 0;
 
-        uint8_t lenght = receivedDatagram[1];
+        char receivedDatagram[1];//TODO!!
+        //uint8_t lenght = receivedDatagram;
         uint64_t verbindFieldLenght = 0;
         uint64_t verbindListLenght = 0;
         uint64_t valueLength = 0;
@@ -468,9 +463,12 @@ void Snmpv1::constructMessage(const std::string str)
 
     cvrt::oidToRaw(oid, constructedoid, oid.length(), constructedoidlen);
 
-    sendedDatagram = 0x06 + cvrt::convertIntAccordingToBER(constructedoidlen) + constructedoid  + 0x05 + (char)0x00;
+    std::vector<char> sendedDatagram;//?
+
+    sendedDatagram.push_back(0x06);
+    sendedDatagram.push_back(cvrt::convertIntAccordingToBER(constructedoidlen));// ETC + constructedoid  + 0x05 + 0x00);
     verbindlistlen = strlen(sendedDatagram);
-    sendedDatagsram = 0x30 + cvrt::convertIntAccordingToBER(verbindlistlen) + sendedDatagram;
+    sendedDatagram = 0x30 + cvrt::convertIntAccordingToBER(verbindlistlen) + sendedDatagram;
     verbindfieldlen = strlen(sendedDatagram);
     sendedDatagram = 0x02 + 0x01 + cvrt::convertIntAccordingToBER(rand() % 255 + 1) + 0x02 + 0x01+ (char)0x00 + 0x02 + 0x01 + (char)0x00 + 0x30 + cvrt::convertIntAccordingToBER(verbindfieldlen) + sendedDatagram;
     pdulen = strlen(sendedDatagram);

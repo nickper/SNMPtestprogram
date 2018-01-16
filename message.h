@@ -6,7 +6,11 @@
 class Message
 {
 public:
-    virtual void sendMessage() =0;
+    virtual ~Message();
+
+    virtual void sendMessage(std::string str) = 0;
+    virtual void sendMessage(int32_t i, std::string str, const std::string valuetype) = 0;
+    virtual void sendMessage(std::string str1, std::string str2) = 0;
     virtual void createSession() =0;
     virtual void deleteSession() = 0;
     virtual std::string getValue() = 0;

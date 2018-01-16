@@ -38,10 +38,10 @@ uint8_t Snmpmessage::getMessageType()
 
 uint8_t Snmpmessage::getSendingPort()
 {
-    return this->sendingPort;
+    return this->sendingPort;// TODO: Conversion
 }
 
 uint8_t Snmpmessage::getReceivingPort()
 {
-    return this->receivingPort;
+    return this->receivingPort;// TODO: Conversion
 }

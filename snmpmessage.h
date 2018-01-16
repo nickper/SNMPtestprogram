@@ -10,7 +10,9 @@ class Snmpmessage : public Message
 public:
     Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort);
     ~Snmpmessage();
-    virtual void sendMessage() =0;
+    virtual void sendMessage(std::string str) = 0;
+    virtual void sendMessage(int32_t i, std::string str, const std::string valuetype) = 0;
+    virtual void sendMessage(std::string str1, std::string str2) = 0;
     virtual std::string getError() = 0;
     virtual std::string getVersion() = 0;
 
@@ -37,8 +39,6 @@ protected:
     uint16_t receivingPort;
     int16_t receivingsize;
     int16_t sendingsize;
-    char receivedDatagram[];
-    char sendedDatagram[];
 
     Session *session;
 };

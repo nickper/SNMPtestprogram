@@ -1,6 +1,8 @@
 #include "session.h"
 
-Session::Session(const std::string &agentAddress, int16_t agentPort, int16_t socketPort):   QObject(), agentAddress(new QHostAddress(QString::fromStdString(agentAddress))), agentPort(agentPort), socketPort(socketPort)
+#include "QThread"
+
+Session::Session(const std::string &agentAddress, uint16_t agentPort, uint16_t socketPort):   QObject(), agentAddress(new QHostAddress(QString::fromStdString(agentAddress))), agentPort(agentPort), socketPort(socketPort)
 {
     udpSocket.bind(socketPort);
 }
@@ -10,7 +12,7 @@ Session::~Session()
     delete agentAddress;
 }
 
-void Session::sendMessage(const char *sendingBytearray , char *receivingBytearray , const int16_t sendingsize , int16_t &receivinglenght)
+void Session::sendMessage(char *sendingBytearray , char *receivingBytearray , const int16_t sendingsize , int16_t &receivinglenght)
 {
     const QByteArray datagram = QByteArray(reinterpret_cast<char*>(sendingBytearray), sendingsize);
     uint8_t attemps = 0;
@@ -19,7 +21,7 @@ void Session::sendMessage(const char *sendingBytearray , char *receivingBytearra
     while(attemps < 3)
     {
         // SEND IT !!!
-        udpSocket.writeDatagram(datagram, datagram.size(), agentAddress, agentPort);
+        udpSocket.writeDatagram(datagram, datagram.size(), *agentAddress, agentPort);
         if(attemps >= 2)
             timeoutTimer = 2500;
         else
@@ -31,11 +33,11 @@ void Session::sendMessage(const char *sendingBytearray , char *receivingBytearra
             if(udpSocket.hasPendingDatagrams())
             {
                 QByteArray receivedDatagram;
-                receivedDatagram.resize(udpSocket.pendingDatagramSize());
+                receivedDatagram.resize(static_cast<int>(udpSocket.pendingDatagramSize())); //TODO: check conversion
                 udpSocket.readDatagram(receivedDatagram.data(), receivedDatagram.size());
-                receivinglenght = receivedDatagram.size();
+                receivinglenght = receivedDatagram.size(); //TODO: size is int receivingbla is int16_t
                 receivingBytearray = new char[receivinglenght];
-                receivingBytearray = receivedDatagram.constData();
+                receivingBytearray = receivedDatagram.data();
                 return;
             }
             QThread::msleep(1);
@@ -46,33 +48,33 @@ void Session::sendMessage(const char *sendingBytearray , char *receivingBytearra
     return;     //should trow exception
 }
 
-void Session::setAgentAddress(const std::string agentAddress)
+void Session::setAgentAddress(QHostAddress* agentAddress)
 {
     this->agentAddress = agentAddress;
 }
 
 void Session::setAgentPort(int16_t agentPort)
 {
-    this->agentPort = agentPort;
+    this->agentPort = agentPort;//TODO Conversion
 }
 
 void Session::setSocketPort(int16_t socketPort)
 {
-    this->socketPort = socketPort;
+    this->socketPort = socketPort;// TODO: Conversion
     udpSocket.bind(this->socketPort);
 }
 
-std::string Session::getAgentAddress() const
+QHostAddress* Session::getAgentAddress() const
 {
-    return agentAddress;
+    return this->agentAddress;
 }
 
 int16_t Session::getAgentPort() const
 {
-    return agentPort;
+    return this->agentPort;// TODO: Conversion
 }
 
 int16_t Session::getSocketPort() const
 {
-    return socketPort;
+    return this->socketPort;// TODO: Conversion
 }
