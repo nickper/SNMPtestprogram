@@ -10,7 +10,7 @@ Session::~Session()
     delete agentAddress;
 }
 
-void Session::sendMessage(const char &sendingBytearray[] , char &receivingBytearray[] , const int16_t sendingsize , int16_t &receivinglenght)
+void Session::sendMessage(const char *sendingBytearray , char *receivingBytearray , const int16_t sendingsize , int16_t &receivinglenght)
 {
     const QByteArray datagram = QByteArray(reinterpret_cast<char*>(sendingBytearray), sendingsize);
     uint8_t attemps = 0;

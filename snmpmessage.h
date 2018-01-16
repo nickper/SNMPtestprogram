@@ -1,8 +1,8 @@
 #ifndef SNMPMESSAGE_H
 #define SNMPMESSAGE_H
 
-//#include <string>
 #include "message.h"
+#include "session.h"
 
 class Session;
 class Snmpmessage : public Message
@@ -11,7 +11,7 @@ public:
     Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort);
     ~Snmpmessage();
     virtual void sendMessage() =0;
-    virtual std::String getError() = 0;
+    virtual std::string getError() = 0;
     virtual std::string getVersion() = 0;
 
     virtual void createSession();
@@ -22,12 +22,13 @@ public:
     virtual uint8_t getSendingPort();
     virtual uint8_t getReceivingPort();
 
-private:
+protected:
     virtual std::string deciperErrorCode() =0;
     virtual void storeValue()=0;
 
     std::string oid;
     std::string ipAddress;
+    std::string valuetype;
     std::string value;
     uint8_t type;
     uint8_t error;
@@ -37,9 +38,9 @@ private:
     int16_t receivingsize;
     int16_t sendingsize;
     char receivedDatagram[];
-    char senddedDatagram[];
+    char sendedDatagram[];
 
-    Session session;
+    Session *session;
 };
 
 #endif // SNMPMESSAGE_H

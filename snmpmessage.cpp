@@ -9,44 +9,39 @@ Snmpmessage::Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPo
 Snmpmessage::~Snmpmessage()
 {
     deleteSession();
-    delete value;
-    delete receivedDatagram[];
-    delete senddedDatagram[];
-    delete oid;
-    delete ipAddress;
 }
 
 void Snmpmessage::createSession()
 {
-    session = new Session(ipAddress, sendingPort, receivingPort);
+    this->session = new Session(ipAddress, sendingPort, receivingPort);
 }
 
 void Snmpmessage::deleteSession()
 {
-    delete Session;
+    delete this->session;
 }
 
 std::string Snmpmessage::getValue()
 {
-    return value;
+    return this->value;
 }
 
 std::string Snmpmessage::getIpAddress()
 {
-    return ipAddress;
+    return this->ipAddress;
 }
 
 uint8_t Snmpmessage::getMessageType()
 {
-    return type;
+    return this->type;
 }
 
 uint8_t Snmpmessage::getSendingPort()
 {
-    return sendingPort;
+    return this->sendingPort;
 }
 
 uint8_t Snmpmessage::getReceivingPort()
 {
-    return receivingPort;
+    return this->receivingPort;
 }
