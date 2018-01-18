@@ -3,6 +3,8 @@
 
 #include "message.h"
 #include "session.h"
+#include "ipaddress.h"
+
 
 class Session;
 class Snmpmessage : public Message
@@ -10,7 +12,7 @@ class Snmpmessage : public Message
 public:
     Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort);
     ~Snmpmessage();
-    virtual void sendMessage() =0;
+    virtual void ssendMessage(std::string value, enumvalue valuetype) =0;
     virtual std::string getError() = 0;
     virtual std::string getVersion() = 0;
 
@@ -27,18 +29,14 @@ protected:
     virtual void storeValue()=0;
 
     std::string oid;
+    IpAddress ipaddress;
     std::string ipAddress;
     std::string valuetype;
     std::string value;
-    uint8_t type;
+    enumvalue valuetype;
+    enumtype messagetype;
     uint8_t error;
     uint8_t seqId;
-    uint16_t sendingPort;
-    uint16_t receivingPort;
-    int16_t receivingsize;
-    int16_t sendingsize;
-    char receivedDatagram[];
-    char sendedDatagram[];
 
     Session *session;
 };

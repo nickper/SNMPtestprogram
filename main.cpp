@@ -1,6 +1,6 @@
 #include <QApplication>
 
-int main(int argc, char *argv[])
+int main()
 {
-    return a.exec();
+
 }

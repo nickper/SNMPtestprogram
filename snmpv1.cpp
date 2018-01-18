@@ -28,110 +28,36 @@ Snmpv1::~Snmpv1()
     deleteSession();
 }
 
-void Snmpv1::sendMessage(const std::string str)
+void Snmpv1::sendMessage(std::string &value, enumvalue &valuetype)
 {
-    this->constructMessage(str);
-    this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
-}
-
-
-void Snmpv1::sendMessage(const int32_t i, const std::string str, const std::string valuetype)
-{
-    this->constructMessage(i, str, valuetype);
-    this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
-}
-
-void Snmpv1::sendMessage(const std::string str1, const std::string str2)
-{
-    this->constructMessage(str1, str2);
+    this->constructMessage(value, valuetype);
     this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
 }
 
 std::string Snmpv1::getError()
 {
     switch (error) {
-        case 0:
-            std::cout << "no error" << std::endl;
-            return "no error";
-            break;
-        case 1:
-            std::cout << "error: TooBig" << std::endl;
-            return "TooBig";
-            break;
-        case 2:
-            std::cout << "error: NoSuchName" << std::endl;
-            return "NoSuchName";
-            break;
-        case 3:
-            std::cout << "error: Badvalue" << std::endl;
-            return "Badvalue";
-            break;
-        case 4:
-            std::cout << "error: ReadOnly" << std::endl;
-            return "ReadOnly";
-            break;
-        case 5:
-            std::cout << "error: GenErr" << std::endl;
-            return "GenErr";
-            break;
-        case 6:
-            std::cout << "error: NoAccess" << std::endl;
-            return "NoAccess";
-            break;
-        case 7:
-            std::cout << "error: WrongType" << std::endl;
-            return "WrongType";
-            break;
-        case 8:
-            std::cout << "error: WrongLength" << std::endl;
-            return "WrongLength";
-            break;
-        case 9:
-            std::cout << "error: WrongEncoding" << std::endl;
-            return "WrongEncoding";
-            break;
-        case 10:
-            std::cout << "error: WrongValue" << std::endl;
-            return "WrongValue";
-            break;
-        case 11:
-            std::cout << "error: NoCreation" << std::endl;
-            return "NoCreation";
-            break;
-        case 12:
-            std::cout << "error: InconsistentValue" << std::endl;
-            return  "InconsistentValue";
-            break;
-        case 13:
-            std::cout << "error: ResourceUnavailable" << std::endl;
-            return "ResourceUnavailable";
-            break;
-        case 14:
-            std::cout << "error: CommitFauled" << std::endl;
-            return "CommitFauled";
-            break;
-        case 15:
-            std::cout << "error: UndoFailed" << std::endl;
-            return "UndoFailed";
-            break;
-        case 16:
-            std::cout << "error: AuthorizationError" << std::endl;
-            return "AuthorizationError";
-            break;
-        case 17:
-            std::cout << "error: NotWritable" << std::endl;
-            return "NotWritable";
-            break;
-        case 18:
-            std::cout << "error: InconsistentName" << std::endl;
-            return "InconsistentName";
-            break;
-        default:
-            std::cout << "unknown error occur" << std::endl;
-            return "unknown";
-            break;
+        case 0: std::cout << "no error" << std::endl; return "no error"; break;
+        case 1: std::cout << "error: TooBig" << std::endl;return "TooBig"; break;
+        case 2: std::cout << "error: NoSuchName" << std::endl; return "NoSuchName"; break;
+        case 3: std::cout << "error: Badvalue" << std::endl; return "Badvalue"; break;
+        case 4: std::cout << "error: ReadOnly" << std::endl;return "ReadOnly"; break;
+        case 5: std::cout << "error: GenErr" << std::endl; return "GenErr"; break;
+        case 6: std::cout << "error: NoAccess" << std::endl; return "NoAccess"; break;
+        case 7: std::cout << "error: WrongType" << std::endl; return "WrongType"; break;
+        case 8: std::cout << "error: WrongLength" << std::endl; return "WrongLength"; break;
+        case 9: std::cout << "error: WrongEncoding" << std::endl; return "WrongEncoding"; break;
+        case 10:std::cout << "error: WrongValue" << std::endl; return "WrongValue"; break;
+        case 11:std::cout << "error: NoCreation" << std::endl; return "NoCreation"; break;
+        case 12:std::cout << "error: InconsistentValue" << std::endl; return  "InconsistentValue"; break;
+        case 13:std::cout << "error: ResourceUnavailable" << std::endl; return "ResourceUnavailable"; break;
+        case 14:std::cout << "error: CommitFauled" << std::endl; return "CommitFauled"; break;
+        case 15:std::cout << "error: UndoFailed" << std::endl; return "UndoFailed"; break;
+        case 16:std::cout << "error: AuthorizationError" << std::endl; return "AuthorizationError"; break;
+        case 17:std::cout << "error: NotWritable" << std::endl; return "NotWritable"; break;
+        case 18:std::cout << "error: InconsistentName" << std::endl; return "InconsistentName"; break;
+        default:std::cout << "unknown error occur" << std::endl;return "unknown";break;
         }
-        return "";
 }
 
 std::string Snmpv1::getVersion()
@@ -453,40 +379,109 @@ void Snmpv1::storeValue()
         }
 }
 
-void Snmpv1::constructMessage(const std::string str)
+std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
 {
+    std::deque<char> message;
     uint16_t verbindfieldlen = 0;
     uint16_t verbindlistlen = 0;
     uint16_t pdulen = 0;
     uint16_t communityStringlen = str.length();
     int16_t constructedoidlen = 0;
-    uint16_t totalmessagelen = 0;
+    uint16_t messagelen = 0;
 
     std::string constructedoid = "";\
-    //sendedDatagram = "";
     std::string pdufield = "";
+    enum {INTEGER=0x02, BITSTRING=0x03, OCTETSTRING=0x04, EMPTY=0x05, OBJECT_IDENTIFIER=0x06, SEQUENCE=0x30, IPADDRESS=0x40, COUNTER32=0x41, GAUGE32=0x42, TIMETICKS=0x43, OPAQUE=0x44, NASPADDRESS=0x45, COUNTER64=0x46, UINTEGER32=0x47} enumvalue;
 
-    cvrt::oidToRaw(oid, constructedoid, oid.length(), constructedoidlen);
+    switch (valuetype) {
+    case INTEGER:
 
-    sendedDatagram = 0x06 + cvrt::convertIntAccordingToBER(constructedoidlen) + constructedoid  + 0x05 + (char)0x00;
-    verbindlistlen = strlen(sendedDatagram);
-    sendedDatagsram = 0x30 + cvrt::convertIntAccordingToBER(verbindlistlen) + sendedDatagram;
-    verbindfieldlen = strlen(sendedDatagram);
-    sendedDatagram = 0x02 + 0x01 + cvrt::convertIntAccordingToBER(rand() % 255 + 1) + 0x02 + 0x01+ (char)0x00 + 0x02 + 0x01 + (char)0x00 + 0x30 + cvrt::convertIntAccordingToBER(verbindfieldlen) + sendedDatagram;
-    pdulen = strlen(sendedDatagram);
-    pdufield = cvrt::constructPduField(type);
-    sendedDatagram = 0x02 + 0x01 + (char)0x00 + 0x04 + cvrt::convertIntAccordingToBER(communityStringlen) + str + pdufield + cvrt::convertIntAccordingToBER(pdulen) + sendedDatagram;
-    totalmessagelen = strlen(sendedDatagram);
-    sendedDatagram = 0x30 + cvrt::convertIntAccordingToBER(totalmessagelen) + sendedDatagram;
-    sendingsize = strlen(sendedDatagram);
+        break;
+    case BITSTRING:
+
+        break;
+    case OCTETSTRING:
+
+        break;
+    case EMPTY:
+
+        break;
+    case OBJECT_IDENTIFIER:
+
+        break;
+    case SEQUENCE:
+
+        break;
+    case IPADDRESS:
+        IpAddress ip = new IpAddress(value);
+        if(ip.isValidateIpAddress())
+        {
+            message.push_front(value);
+            message.push_front(IPADDRESS);
+            break;
+        }
+        else
+        {
+            abort();        //throw exception
+        }
+
+    case COUNTER32:
+
+        break;
+    case GAUGE32:
+
+        break;
+    case TIMETICKS:
+
+        break;
+    case OPAQUE:
+
+        break;
+    case NASPADDRESS:
+
+        break;
+    case COUNTER64:
+
+        break;
+    case UINTEGER32:
+
+        break;
+    default:
+        break;
+    }
+
+    cvrt::oidToRaw(oid, constructedoid);
+    message.push_front(constructedoid);
+    message.push_front(cvrt::convertIntAccordingToBER(constructedoid.size()));
+    message.push_front(0x06);
+    verbindlistlen = message.size();
+    message.push_front(cvrt::convertIntAccordingToBER(verbindlistlen));
+    message.push_front(0x30);
+    verbindfieldlen = message.size();
+    message.push_front(cvrt::convertIntAccordingToBER(verbindfieldlen));
+    message.push_front(0x30);
+    message.push_front((char)0x00);
+    message.push_front(0x01);
+    message.push_front(0x02);
+    message.push_front((char)0x00);
+    message.push_front(0x01);
+    message.push_front(0x02);
+    message.push_front(cvrt::convertIntAccordingToBER(rand() % 255 + 1));
+    message.push_front(0x01);
+    message.push_front(0x02);
+    pdulen = message.size();
+    message.push_front(pdulen);
+    message.push_front();                       //pdufield, kijken hoe ik deze mee ga geven.
+    message.push_front(this->communityString);
+    message.push_front(this->communityString.size());
+    message.push_front(0x04);
+    message.push_front((char)0x00);
+    message.push_front(0x01);
+    message.push_front(0x02);
+    messagelen = message.size();
+    message.push_front(cvrt::convertIntAccordingToBER(messagelen));
+    message.push_front(0x30);
+    return message;
 }
 
-void Snmpv1::constructMessage(const int32_t i, const std::string str, const std::string valuetype)
-{
 
-}
-
-void Snmpv1::constructMessage(const std::string str1, const std::string str2)
-{
-
-}
