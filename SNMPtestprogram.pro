@@ -16,8 +16,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
-    mainwindow.cpp \
-    snmpsession.cpp \
     snmpmessage.cpp \
     snmpv1.cpp \
     session.cpp \
@@ -25,16 +23,10 @@ SOURCES += main.cpp \
     objectidentifier.cpp
 
 
-FORMS += \
-    mainwindow.ui
-
 DISTFILES += \
     net-snmp-5.7.3\
 
 HEADERS += \
-    mainwindow.h \
-    snmpsession.h \
-    ui_mainwindow.h \
     message.h \
     snmpmessage.h \
     snmpv1.h \

@@ -1,4 +1,5 @@
 #include "session.h"
+#include "QThread"
 
 Session::Session(const std::string &agentAddress, int16_t agentPort, int16_t socketPort):   QObject(), agentAddress(new QHostAddress(QString::fromStdString(agentAddress))), agentPort(agentPort), socketPort(socketPort)
 {
@@ -10,7 +11,7 @@ Session::~Session()
     delete agentAddress;
 }
 
-void Session::sendMessage(std::deque &sendingarray )
+void Session::sendMessage(std::deque<char[]> &sendingarray )
 {
     const QByteArray array;
     for(int i = 0; i < sendingarray.size(); i++)
@@ -20,7 +21,7 @@ void Session::sendMessage(std::deque &sendingarray )
     udpSocket.writeDatagram(array, array.size(), agentAddress, agentPort);
 }
 
-std::deque Session::receiveMessage()
+std::deque<char[]> Session::receiveMessage()
 {
     int timeoutTimer = 0;
     while(timeoutTimer <= 3000)

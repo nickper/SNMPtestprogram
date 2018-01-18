@@ -14,8 +14,8 @@ class Session : public QObject {
 public:
     Session(const std::string &agentAddress, int16_t agentPort, int16_t socketPort);
     ~Session();
-    void sendMessage(std::deque &sendingarray);
-    std::deque receiveMessage();
+    void sendMessage(std::deque<char[]> &sendingarray);
+    std::deque<char[]> receiveMessage();
     void setAgentAddress(const std::string agentAddress);
     void setAgentPort(int16_t agentPort);
     void setSocketPort(int16_t socketPort);
