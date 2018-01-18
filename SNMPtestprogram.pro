@@ -20,7 +20,9 @@ SOURCES += main.cpp \
     snmpsession.cpp \
     snmpmessage.cpp \
     snmpv1.cpp \
-    session.cpp
+    session.cpp \
+    ipaddress.cpp \
+    ipv4.cpp
 
 
 FORMS += \
@@ -37,5 +39,7 @@ HEADERS += \
     snmpmessage.h \
     snmpv1.h \
     session.h \
-    cvrt.h
+    cvrt.h \
+    ipaddress.h \
+    ipv4.h
 
