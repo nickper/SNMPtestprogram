@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QHostAddress>
 #include <string>
+#include <deque>
 
 class Session : public QObject {
 
@@ -13,7 +14,8 @@ class Session : public QObject {
 public:
     Session(const std::string &agentAddress, int16_t agentPort, int16_t socketPort);
     ~Session();
-    void sendMessage(const char *sendingBytearray, char *receivingBytearray, const int16_t sendingsize, int16_t &receivinglenght);
+    void sendMessage(std::deque &sendingarray);
+    std::deque receiveMessage();
     void setAgentAddress(const std::string agentAddress);
     void setAgentPort(int16_t agentPort);
     void setSocketPort(int16_t socketPort);

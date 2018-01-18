@@ -10,40 +10,37 @@ Session::~Session()
     delete agentAddress;
 }
 
-void Session::sendMessage(const char *sendingBytearray , char *receivingBytearray , const int16_t sendingsize , int16_t &receivinglenght)
+void Session::sendMessage(std::deque &sendingarray )
 {
-    const QByteArray datagram = QByteArray(reinterpret_cast<char*>(sendingBytearray), sendingsize);
-    uint8_t attemps = 0;
-    int timeoutTimer = 0;
-
-    while(attemps < 3)
+    const QByteArray array;
+    for(int i = 0; i < sendingarray.size(); i++)
     {
-        // SEND IT !!!
-        udpSocket.writeDatagram(datagram, datagram.size(), agentAddress, agentPort);
-        if(attemps >= 2)
-            timeoutTimer = 2500;
-        else
-            timeoutTimer = 0;
-
-        // Receive it
-        while(timeoutTimer <= 3000)
-        {
-            if(udpSocket.hasPendingDatagrams())
-            {
-                QByteArray receivedDatagram;
-                receivedDatagram.resize(udpSocket.pendingDatagramSize());
-                udpSocket.readDatagram(receivedDatagram.data(), receivedDatagram.size());
-                receivinglenght = receivedDatagram.size();
-                receivingBytearray = new char[receivinglenght];
-                receivingBytearray = receivedDatagram.constData();
-                return;
-            }
-            QThread::msleep(1);
-            timeoutTimer++;
-        }
-
+        array.push_back(sendingarray.at(i));
     }
-    return;     //should trow exception
+    udpSocket.writeDatagram(array, array.size(), agentAddress, agentPort);
+}
+
+std::deque Session::receiveMessage()
+{
+    int timeoutTimer = 0;
+    while(timeoutTimer <= 3000)
+    {
+        if(udpSocket.hasPendingDatagrams())
+        {
+            QByteArray receivedDatagram;
+            std::deque tempque;
+            receivedDatagram.resize(udpSocket.pendingDatagramSize());
+            udpSocket.readDatagram(receivedDatagram.data(), receivedDatagram.size());
+            for(int i = 0; i < receivedDatagram.size(); i++)
+            {
+                tempque.push_back(receivedDatagram.at(i));
+            }
+            return;
+        }
+        QThread::msleep(1);
+        timeoutTimer++;
+    }
+    return;     //should trow exception     //not necessary
 }
 
 void Session::setAgentAddress(const std::string agentAddress)
