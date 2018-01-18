@@ -2,14 +2,17 @@
 #define IPV4_H
 
 #include "IpAddress.h"
-#include <string>
 
 class IPv4 : public IpAddress
 {
 public:
-    IPv4();
+    IPv4(std::string ipAddress);
+    virtual bool isValidateIpAddress(std::string ipAddress);
+    virtual std::string getIpAddress();
+    virtual void setIpAddress(std::string ipAddress);
 private:
-    std::st
+    int valid_digit(char *ip_str);
+    std::string ipAddress;
 };
 
 #endif // IPV4_H

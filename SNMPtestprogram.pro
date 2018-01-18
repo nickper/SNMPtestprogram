@@ -21,7 +21,6 @@ SOURCES += main.cpp \
     snmpmessage.cpp \
     snmpv1.cpp \
     session.cpp \
-    ipaddress.cpp \
     ipv4.cpp
 
 

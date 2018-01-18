@@ -1,12 +1,15 @@
 #ifndef IPADDRESS_H
 #define IPADDRESS_H
 
+#include <string>
 
 class IpAddress
 {
 public:
     IpAddress();
-    bool validateIpAddress() =0;
+    virtual bool isValidateIpAddress() =0;
+    virtual std::string getIpAddress() = 0;
+    virtual void setIpAddress(std::string) = 0;
 private:
 
 };
