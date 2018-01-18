@@ -416,10 +416,11 @@ std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
         message.push_front(EMPTY);
         break;
     case OBJECT_IDENTIFIER:
-        std::string tempoid;
+        ObjectIdentifier tempOid(value);
+        std::string convertedOid = "";
         uint32_t tempoidlen;
-        cvrt::oidToRaw(value, tempoid, tempoidlen); //need funtion to check if it is a valid oid. maybe new class named oid.
-        message.push_front(tempoid);
+        cvrt::oidToRaw(tempOid.getObjectIdentifier(), convertedOid, tempoidlen); //need funtion to check if it is a valid oid. maybe new class named oid.
+        message.push_front(convertedOid);
         message.push_front(cvrt::convertIntAccordingToBER(tempoidlen));
         message.push_front(OBJECT_IDENTIFIER);
         break;

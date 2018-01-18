@@ -23,15 +23,16 @@ bool IPv4::isValidateIpAddress(std::string ipAddress)
     if (ptr == NULL)
         return false;
 
-    while (ptr) {
-
+    while (ptr)
+    {
         if (!valid_digit(ptr))
             return false;
 
         num = atoi(ptr);
 
         /* check for valid IP */
-        if (num >= 0 && num <= 255) {
+        if (num >= 0 && num <= 255)
+        {
             /* parse remaining string */
             ptr = strtok(NULL, '.');
             if (ptr != NULL)
@@ -47,7 +48,8 @@ bool IPv4::isValidateIpAddress(std::string ipAddress)
 
 int IPv4::valid_digit(char *ip_str)
 {
-    while (*ip_str) {
+    while (*ip_str)
+    {
         if (*ip_str >= '0' && *ip_str <= '9')
             ++ip_str;
         else

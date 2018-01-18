@@ -4,6 +4,7 @@
 #include "message.h"
 #include "session.h"
 #include "ipaddress.h"
+#include "objectidentifier.h"
 
 
 class Session;
@@ -28,7 +29,7 @@ protected:
     virtual std::string deciperErrorCode() =0;
     virtual void storeValue()=0;
 
-    std::string oid;
+    ObjectIdentifier oid;
     IpAddress ipaddress;
     std::string ipAddress;
     std::string valuetype;

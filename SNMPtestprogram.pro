@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     snmpmessage.cpp \
     snmpv1.cpp \
     session.cpp \
-    ipv4.cpp
+    ipv4.cpp \
+    objectidentifier.cpp
 
 
 FORMS += \
@@ -40,5 +41,6 @@ HEADERS += \
     session.h \
     cvrt.h \
     ipaddress.h \
-    ipv4.h
+    ipv4.h \
+    objectidentifier.h
 
