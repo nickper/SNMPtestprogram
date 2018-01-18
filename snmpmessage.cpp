@@ -1,7 +1,7 @@
 #include "snmpmessage.h"
 #include "session.h"
 
-Snmpmessage::Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort): ipAddress(ipAddress), type(type), sendingPort(sendingPort), receivingPort(receivingPort)
+Snmpmessage::Snmpmessage(IpAddress ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort): ipAddress(ipAddress.getIpAddress()), type(type), sendingPort(sendingPort), receivingPort(receivingPort)
 {
     createSession();
 }
@@ -26,12 +26,12 @@ std::string Snmpmessage::getValue()
     return this->value;
 }
 
-std::string Snmpmessage::getIpAddress()
+IpAddress Snmpmessage::getIpAddress()
 {
-    return this->ipAddress;
+    return IpAddress(this->ipaddress);
 }
 
-uint8_t Snmpmessage::getMessageType()
+enumtype Snmpmessage::getMessageType()
 {
     return this->type;
 }

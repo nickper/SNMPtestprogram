@@ -34,30 +34,9 @@ void Snmpv1::sendMessage(std::string &value, enumvalue &valuetype)
     this->session->sendMessage(sendedDatagram, receivedDatagram, sendingsize, receivingsize);
 }
 
-std::string Snmpv1::getError()
+enumerror Snmpv1::getError()
 {
-    switch (error) {
-        case 0: std::cout << "no error" << std::endl; return "no error"; break;
-        case 1: std::cout << "error: TooBig" << std::endl;return "TooBig"; break;
-        case 2: std::cout << "error: NoSuchName" << std::endl; return "NoSuchName"; break;
-        case 3: std::cout << "error: Badvalue" << std::endl; return "Badvalue"; break;
-        case 4: std::cout << "error: ReadOnly" << std::endl;return "ReadOnly"; break;
-        case 5: std::cout << "error: GenErr" << std::endl; return "GenErr"; break;
-        case 6: std::cout << "error: NoAccess" << std::endl; return "NoAccess"; break;
-        case 7: std::cout << "error: WrongType" << std::endl; return "WrongType"; break;
-        case 8: std::cout << "error: WrongLength" << std::endl; return "WrongLength"; break;
-        case 9: std::cout << "error: WrongEncoding" << std::endl; return "WrongEncoding"; break;
-        case 10:std::cout << "error: WrongValue" << std::endl; return "WrongValue"; break;
-        case 11:std::cout << "error: NoCreation" << std::endl; return "NoCreation"; break;
-        case 12:std::cout << "error: InconsistentValue" << std::endl; return  "InconsistentValue"; break;
-        case 13:std::cout << "error: ResourceUnavailable" << std::endl; return "ResourceUnavailable"; break;
-        case 14:std::cout << "error: CommitFauled" << std::endl; return "CommitFauled"; break;
-        case 15:std::cout << "error: UndoFailed" << std::endl; return "UndoFailed"; break;
-        case 16:std::cout << "error: AuthorizationError" << std::endl; return "AuthorizationError"; break;
-        case 17:std::cout << "error: NotWritable" << std::endl; return "NotWritable"; break;
-        case 18:std::cout << "error: InconsistentName" << std::endl; return "InconsistentName"; break;
-        default:std::cout << "unknown error occur" << std::endl;return "unknown";break;
-        }
+    return this->error;
 }
 
 std::string Snmpv1::getVersion()
@@ -72,7 +51,28 @@ void Snmpv1::setCommunityString(std::string communityString)
 
 std::string Snmpv1::deciperErrorCode()
 {
-
+    switch (error) {
+        case NOERROR: std::cout << "no error" << std::endl; return "no error"; break;
+        case TOOBIG: std::cout << "error: TooBig" << std::endl;return "TooBig"; break;
+        case NOSUCHNAME: std::cout << "error: NoSuchName" << std::endl; return "NoSuchName"; break;
+        case BADVALUE: std::cout << "error: Badvalue" << std::endl; return "Badvalue"; break;
+        case READONLY: std::cout << "error: ReadOnly" << std::endl;return "ReadOnly"; break;
+        case GENERR: std::cout << "error: GenErr" << std::endl; return "GenErr"; break;
+        case NOACCESS: std::cout << "error: NoAccess" << std::endl; return "NoAccess"; break;
+        case WRONGTYPE: std::cout << "error: WrongType" << std::endl; return "WrongType"; break;
+        case WRONGLENGHT: std::cout << "error: WrongLength" << std::endl; return "WrongLength"; break;
+        case WRONGENCODING: std::cout << "error: WrongEncoding" << std::endl; return "WrongEncoding"; break;
+        case WRONGVALUE:std::cout << "error: WrongValue" << std::endl; return "WrongValue"; break;
+        case NOCREATION:std::cout << "error: NoCreation" << std::endl; return "NoCreation"; break;
+        case INCOSISTENTVALUE:std::cout << "error: InconsistentValue" << std::endl; return  "InconsistentValue"; break;
+        case RESOURCEUNAVAILABLE:std::cout << "error: ResourceUnavailable" << std::endl; return "ResourceUnavailable"; break;
+        case COMMITFAULED:std::cout << "error: CommitFauled" << std::endl; return "CommitFauled"; break;
+        case UNDOFAILED:std::cout << "error: UndoFailed" << std::endl; return "UndoFailed"; break;
+        case AUTHORIZATIONERROR:std::cout << "error: AuthorizationError" << std::endl; return "AuthorizationError"; break;
+        case NOTWRITABLE:std::cout << "error: NotWritable" << std::endl; return "NotWritable"; break;
+        case INCONSISTENDNAME:std::cout << "error: InconsistentName" << std::endl; return "InconsistentName"; break;
+        default:std::cout << "unknown error occur" << std::endl;return "unknown";break;
+        }
 }
 void Snmpv1::storeValue()
 {
@@ -385,38 +385,53 @@ std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
     uint16_t verbindfieldlen = 0;
     uint16_t verbindlistlen = 0;
     uint16_t pdulen = 0;
-    uint16_t communityStringlen = str.length();
-    int16_t constructedoidlen = 0;
     uint16_t messagelen = 0;
 
     std::string constructedoid = "";\
-    std::string pdufield = "";
-    enum {INTEGER=0x02, BITSTRING=0x03, OCTETSTRING=0x04, EMPTY=0x05, OBJECT_IDENTIFIER=0x06, SEQUENCE=0x30, IPADDRESS=0x40, COUNTER32=0x41, GAUGE32=0x42, TIMETICKS=0x43, OPAQUE=0x44, NASPADDRESS=0x45, COUNTER64=0x46, UINTEGER32=0x47} enumvalue;
 
     switch (valuetype) {
     case INTEGER:
-
+        uint32_t tempvalue = std::stoi(value);
+        message.push_front(tempvalue);
+        if(tempvalue < 256)
+            message.push_front(0x01);
+        else if(tempvalue < 65536)
+            message.push_front(0x02);
+        else if(tempvalue < 16777216)
+            message.push_front(0x03);
+        else
+            message.push_front(0x04);
+        message.push_front(INTEGER);
         break;
     case BITSTRING:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case OCTETSTRING:
-
+        message.push_front(value);
+        message.push_front(cvrt::convertIntAccordingToBER(value.size()));
+        message.push_front(OCTETSTRING);
         break;
     case EMPTY:
-
+        message.push_front(0x00);
+        message.push_front(EMPTY);
         break;
     case OBJECT_IDENTIFIER:
-
+        std::string tempoid;
+        uint32_t tempoidlen;
+        cvrt::oidToRaw(value, tempoid, tempoidlen); //need funtion to check if it is a valid oid. maybe new class named oid.
+        message.push_front(tempoid);
+        message.push_front(cvrt::convertIntAccordingToBER(tempoidlen));
+        message.push_front(OBJECT_IDENTIFIER);
         break;
     case SEQUENCE:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case IPADDRESS:
         IpAddress ip = new IpAddress(value);
         if(ip.isValidateIpAddress())
         {
-            message.push_front(value);
+            message.push_front(value);              //check welk format er gebruikt word.
+            message.push_front(value.size());
             message.push_front(IPADDRESS);
             break;
         }
@@ -424,27 +439,36 @@ std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
         {
             abort();        //throw exception
         }
-
     case COUNTER32:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case GAUGE32:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case TIMETICKS:
-
+        uint32_t tempvalue = std::stoi(value);
+        message.push_front(tempvalue);
+        if(tempvalue < 256)
+            message.push_front(0x01);
+        else if(tempvalue < 65536)
+            message.push_front(0x02);
+        else if(tempvalue < 16777216)
+            message.push_front(0x03);
+        else
+            message.push_front(0x04);
+        message.push_front(TIMETICKS);
         break;
     case OPAQUE:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case NASPADDRESS:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case COUNTER64:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case UINTEGER32:
-
+                                        //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     default:
         break;
@@ -471,7 +495,7 @@ std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
     message.push_front(0x02);
     pdulen = message.size();
     message.push_front(pdulen);
-    message.push_front();                       //pdufield, kijken hoe ik deze mee ga geven.
+    message.push_front(this->messagetype);
     message.push_front(this->communityString);
     message.push_front(this->communityString.size());
     message.push_front(0x04);

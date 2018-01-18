@@ -12,7 +12,7 @@ public:
     Snmpv1(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort);
     ~Snmpv1();
     virtual void sendMessage(std::string &value, enumvalue &valuetype);
-    virtual std::string getError();
+    virtual enumerror getError();
     virtual std::string getVersion();
     void setCommunityString(std::string communityString);
 
