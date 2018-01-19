@@ -1,9 +1,9 @@
 #include "snmpmessage.h"
 #include "session.h"
 
-Snmpmessage::Snmpmessage(std::string ipAddress, uint8_t type, uint16_t /*sendingPort*/, uint16_t /*receivingPort*/): ipAddress(ipAddress), valuetype(enumvalue(type))/*, sendingPort(sendingPort), receivingPort(receivingPort)*/ //Sending and receiving port bestaan niet, aanmaken of verwijderen.
+Snmpmessage::Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort): ipAddress(ipAddress), valuetype(enumvalue(type))
 {
-    createSession();
+    createSession(sendingPort, receivingPort);
 }
 
 Snmpmessage::~Snmpmessage()
@@ -11,9 +11,9 @@ Snmpmessage::~Snmpmessage()
     deleteSession();
 }
 
-void Snmpmessage::createSession()
+void Snmpmessage::createSession(uint16_t sendingPort, uint16_t receivingPort)
 {
-    this->session = new Session(this->ipAddress, sendingPort, receivingPort);// sendingport and receiving port bestaan niet
+    this->session = new Session(this->ipAddress, sendingPort, receivingPort);
 }
 
 void Snmpmessage::deleteSession()
@@ -26,10 +26,10 @@ std::string Snmpmessage::getValue()
     return this->value;
 }
 
-//IpAddress Snmpmessage::getIpAddress()
-//{
-//    return IpAddress(this->ipaddress);
-//}
+std::string Snmpmessage::getIpAddress()
+{
+    return this->ipAddress;
+}
 
 enumtype Snmpmessage::getMessageType()
 {
@@ -38,10 +38,10 @@ enumtype Snmpmessage::getMessageType()
 
 uint8_t Snmpmessage::getSendingPort()
 {
-    return this->sendingPort;//'Bestaat niet
+    return this->session->getAgentPort();
 }
 
 uint8_t Snmpmessage::getReceivingPort()
 {
-    return this->receivingPort;// bestaat niet
+    return this->session->getSocketPort();
 }

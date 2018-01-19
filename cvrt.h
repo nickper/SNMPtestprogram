@@ -162,28 +162,16 @@ void oidToRaw(const std::string input , std::string &output , const int16_t inpu
 unsigned char constructPduField(uint8_t PDUfield)
 {
     switch (PDUfield) {
-    case 0:                                 //get request
-        //char temp = 0xa0;
-        //return temp;
-        return (char)0xa0;
-    case 1:                                 //getnext request
-        return (char)0xa1;
-    case 2:                                 //response
-        return (char)0xa2;
-    case 3:                                 //set request
-        return (char)0xa3;
-    case 4:                                 //trap pdu (snmpv1)
-        return (char)0xa4;
-    case 5:                                 //getbulk request (snmpv2)
-        return (char)0xa5;
-    case 6:                                 //informRequest
-        return (char)0xa6;
-    case 7:                                 //trapv2 (snmpv2
-        return (char)0xa7;
-    case 8:                                 //report
-        return (char)0xa8;
-    default:
-        return -1;
+    case 0: return (char)0xa0;  //get request
+    case 1: return (char)0xa1;  //getnext request
+    case 2: return (char)0xa2;  //response
+    case 3: return (char)0xa3;  //set request
+    case 4: return (char)0xa4;  //trap pdu (snmpv1)
+    case 5: return (char)0xa5;  //getbulk request (snmpv2)
+    case 6: return (char)0xa6;  //informRequest
+    case 7: return (char)0xa7;  //trapv2 (snmpv2
+    case 8: return (char)0xa8;  //report
+    default: return -1;
     }
 }
 

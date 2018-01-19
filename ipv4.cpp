@@ -4,13 +4,13 @@
 
 IPv4::IPv4(std::string ipAddress)
 {
-    if(isValidateIpAddress(ipAddress))
+    if(isValidateIpAddress())
         this->ipAddress = ipAddress;
     else
         abort();        //throw exception.
 }
 
-bool IPv4::isValidateIpAddress(std::string ipAddress)
+bool IPv4::isValidateIpAddress()
 {
     int i, num, dots = 0;
     char *ptr;
@@ -65,7 +65,7 @@ virtual std::string IPv4::getIpAddress()
 
 virtual void IPv4::setIpAddress(std::string ipAddress)
 {
-    if(isValidateIpAddress(ipAddress))
+    if(isValidateIpAddress())
     {
         this->ipAddress = ipAddress
     }

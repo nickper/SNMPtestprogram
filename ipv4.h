@@ -8,7 +8,7 @@ class IPv4 : public IpAddress
 public:
     IPv4(std::string ipAddress);
     virtual ~IPv4();
-    virtual bool isValidateIpAddress(std::string ipAddress);
+    virtual bool isValidateIpAddress();
     virtual std::string getIpAddress();
     virtual void setIpAddress(std::string ipAddress);
 private:

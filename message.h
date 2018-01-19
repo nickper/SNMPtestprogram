@@ -18,6 +18,7 @@ public:
     virtual std::string getValue() = 0;
     virtual enumerror getError() = 0;
     //virtual IpAddress getIpAddress() =0; //Mag IpAddress niet gebruiken als return, is abstracte klasse, zijn geen objecten van te maken.
+    virtual std::string getIpAddress() = 0;
     virtual enumtype getMessageType() =0;
     virtual uint8_t getPort() = 0;
 

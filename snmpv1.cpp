@@ -389,6 +389,7 @@ std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
 
     std::string constructedoid = "";\
 
+//-------------construct value field---------------
     switch (valuetype) {
     case INTEGER:
         uint32_t tempvalue = std::stoi(value);
@@ -428,7 +429,7 @@ std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
                                         //nog eens goed uitzoeken hoe deze encoding werkt
         break;
     case IPADDRESS:
-        IpAddress ip = new IpAddress(value);
+        IpAddress ip(value);
         if(ip.isValidateIpAddress())
         {
             message.push_front(value);              //check welk format er gebruikt word.
@@ -475,6 +476,7 @@ std::deque Snmpv1::constructMessage(std::string &value, enumvalue &valuetype)
         break;
     }
 
+//--------------construct the rest of the message------------
     cvrt::oidToRaw(oid, constructedoid);
     message.push_front(constructedoid);
     message.push_front(cvrt::convertIntAccordingToBER(constructedoid.size()));

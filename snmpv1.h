@@ -5,7 +5,6 @@
 #include "snmpmessage.h"
 #include <deque>
 
-//class Snmpmessage;
 class Snmpv1 : public Snmpmessage
 {
 public:
