@@ -11,17 +11,18 @@ Session::~Session()
     delete agentAddress;
 }
 
-void Session::sendMessage(std::deque<char[]> &sendingarray )
+void Session::sendMessage(std::deque<char> &sendingarray )
 {
-    const QByteArray array;
+    QByteArray array;
     for(int i = 0; i < sendingarray.size(); i++)
     {
         array.push_back(sendingarray.at(i));
     }
-    udpSocket.writeDatagram(array, array.size(), agentAddress, agentPort);
+    qint16 agentport = agentPort;
+    udpSocket.writeDatagram(array, array.size(), *this->agentAddress, agentport);
 }
 
-std::deque<char[]> Session::receiveMessage()
+std::deque<char> Session::receiveMessage()
 {
     int timeoutTimer = 0;
     while(timeoutTimer <= 3000)
@@ -29,24 +30,19 @@ std::deque<char[]> Session::receiveMessage()
         if(udpSocket.hasPendingDatagrams())
         {
             QByteArray receivedDatagram;
-            std::deque tempque;
+            std::deque<char> tempdeque;
             receivedDatagram.resize(udpSocket.pendingDatagramSize());
             udpSocket.readDatagram(receivedDatagram.data(), receivedDatagram.size());
             for(int i = 0; i < receivedDatagram.size(); i++)
             {
-                tempque.push_back(receivedDatagram.at(i));
+                tempdeque.push_back(receivedDatagram.at(i));
             }
-            return;
+            return tempdeque;
         }
         QThread::msleep(1);
         timeoutTimer++;
     }
-    return;     //should trow exception     //not necessary
-}
-
-void Session::setAgentAddress(const std::string agentAddress)
-{
-    this->agentAddress = agentAddress;
+    throw -1;                                //should trow exception
 }
 
 void Session::setAgentPort(int16_t agentPort)
@@ -62,7 +58,7 @@ void Session::setSocketPort(int16_t socketPort)
 
 std::string Session::getAgentAddress() const
 {
-    return agentAddress;
+    return agentAddress->toString().toStdString();
 }
 
 int16_t Session::getAgentPort() const

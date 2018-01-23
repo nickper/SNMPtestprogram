@@ -6,6 +6,7 @@
 class ObjectIdentifier
 {
 public:
+    ObjectIdentifier();
     ObjectIdentifier(std::string oid);
     std::string getObjectIdentifier() const;
     bool setObjectIdentifier(std::string oid);

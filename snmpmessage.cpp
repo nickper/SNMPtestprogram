@@ -1,9 +1,10 @@
 #include "snmpmessage.h"
 #include "session.h"
 
-Snmpmessage::Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort): ipAddress(ipAddress), valuetype(enumvalue(type))
+Snmpmessage::Snmpmessage(std::string ipAddress, uint8_t type, uint16_t sendingPort, uint16_t receivingPort): ipAddress(ipAddress), valuetype(enumvalue(type)), oid(ObjectIdentifier())
 {
     createSession(sendingPort, receivingPort);
+    //this->oid = ObjectIdentifier("1.3");
 }
 
 Snmpmessage::~Snmpmessage()
@@ -44,4 +45,14 @@ uint8_t Snmpmessage::getSendingPort()
 uint8_t Snmpmessage::getReceivingPort()
 {
     return this->session->getSocketPort();
+}
+
+ObjectIdentifier Snmpmessage::getOid()
+{
+    return this->oid;
+}
+
+void Snmpmessage::setOid(std::string oid)
+{
+    this->oid = ObjectIdentifier(oid);
 }

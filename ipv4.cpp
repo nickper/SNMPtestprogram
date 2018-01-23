@@ -1,6 +1,7 @@
 #include "ipv4.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <cstring>
 
 IPv4::IPv4(std::string ipAddress)
 {
@@ -15,10 +16,12 @@ bool IPv4::isValidateIpAddress()
     int i, num, dots = 0;
     char *ptr;
 
-    if (ipAddress == NULL)
+    if (ipAddress == "")
         return false;
 
-    ptr = strtok(ipAddress, '.');
+    char *cstr = &ipAddress[0u];
+
+    ptr = std::strtok(cstr, '.');
 
     if (ptr == NULL)
         return false;
@@ -34,7 +37,7 @@ bool IPv4::isValidateIpAddress()
         if (num >= 0 && num <= 255)
         {
             /* parse remaining string */
-            ptr = strtok(NULL, '.');
+            ptr = std::strtok(NULL, '.');
             if (ptr != NULL)
                 ++dots;
         } else

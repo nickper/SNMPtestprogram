@@ -24,6 +24,8 @@ public:
     virtual enumtype getMessageType();
     virtual uint8_t getSendingPort();
     virtual uint8_t getReceivingPort();
+    virtual ObjectIdentifier getOid();
+    virtual void setOid(std::string oid);
 
 protected:
     virtual std::string deciperErrorCode() =0;

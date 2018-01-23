@@ -17,9 +17,9 @@ public:
 
 private:
     virtual std::string deciperErrorCode();
-    std::deque constructMessage(std::string &value, enumvalue &valuetype);
+    std::deque<char> constructMessage(std::string &value, enumvalue &valuetype);
 
-    virtual void storeValue();
+    virtual void getValue(std::deque<char> receivedMessage);
     std::string communityString;
 };
 

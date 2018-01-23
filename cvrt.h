@@ -132,7 +132,7 @@ std::string convertIntAccordingToBER(uint32_t const &valueToConvert)
 }
 
 
-void oidToRaw(const std::string input , std::string &output , const int16_t inputlen , int16_t &outputlen)
+void oidToRaw(const std::string input , std::string &output)
 {
     std::vector<uint32_t> oidvector;
 

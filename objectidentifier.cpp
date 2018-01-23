@@ -1,5 +1,10 @@
 #include "objectidentifier.h"
 
+ObjectIdentifier::ObjectIdentifier()
+{
+    this->oid = "1.3"
+}
+
 ObjectIdentifier::ObjectIdentifier(std::string oid)
 {
     if(isValidObjectIdentifier(oid))
